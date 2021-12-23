@@ -5,9 +5,12 @@ import (
 )
 
 type User struct {
-	ID        uint
-	Username  string
-	Name      string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID          uint
+	Username    string
+	Name        string
+	Email       string
+	Password    string
+	ActivatedAt time.Time
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
