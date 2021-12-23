@@ -1,11 +1,10 @@
 package AuthController
 
 import (
-	"app/Exceptions"
 	"app/base"
+	"app/exceptions/ValidationExeption"
 	"app/requests"
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
 	"net/http"
 )
 
@@ -25,7 +24,7 @@ func (c AuthController) Register(ctx *gin.Context) {
 	var request requests.Register
 
 	if err := ctx.ShouldBindJSON(&request); err != nil {
-		e := Exceptions.New(err.(validator.ValidationErrors))
+		e := ValidationExeption.New(err)
 		ctx.JSON(http.StatusBadRequest, gin.H{"errors": e.FormatToFront()})
 		return
 	}
