@@ -1,4 +1,4 @@
-create table user_token
+create table user_tokens
 (
     id          bigserial primary key unique,
     user_id     bigserial not null,

@@ -3,6 +3,7 @@ package AuthController
 import (
 	"app/base"
 	"app/exceptions/ValidationExeption"
+	"app/models"
 	"app/requests"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -29,7 +30,24 @@ func (c AuthController) Register(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, &request)
+	var u = models.User{
+		Username: request.Email,
+		Email:    request.Email,
+		Password: request.Password,
+	}
+
+	_, err := u.Save(c.DB)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, map[string]interface{}{
+			"errors": map[string]interface{}{
+				"email": err.Error(),
+			},
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusCreated, &u)
 }
 
 func (c AuthController) CheckAuth(ctx *gin.Context) {
