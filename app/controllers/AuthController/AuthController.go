@@ -5,6 +5,7 @@ import (
 	"app/exceptions/ValidationExeption"
 	"app/models"
 	"app/requests"
+	"app/resources"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -33,6 +34,7 @@ func (c AuthController) Register(ctx *gin.Context) {
 	var u = models.User{
 		Username: request.Email,
 		Email:    request.Email,
+		Name:     request.Name,
 		Password: request.Password,
 	}
 
@@ -47,7 +49,9 @@ func (c AuthController) Register(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, &u)
+	resource := resources.GetUserResource(&u)
+
+	ctx.JSON(http.StatusCreated, &resource)
 }
 
 func (c AuthController) CheckAuth(ctx *gin.Context) {
