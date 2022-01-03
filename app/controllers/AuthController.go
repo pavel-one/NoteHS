@@ -6,7 +6,6 @@ import (
 	"app/models"
 	"app/requests"
 	"app/resources"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -33,8 +32,6 @@ func (c AuthController) Auth(ctx *gin.Context) {
 
 	c.DB.Model(&user).Where("email = ?", request.Email).First(&user)
 
-	fmt.Println(user.Email)
-
 	if user.ID == 0 {
 		c.Error(map[string]interface{}{
 			"email": "Не правильное имя пользователя или пароль",
@@ -49,7 +46,9 @@ func (c AuthController) Auth(ctx *gin.Context) {
 		return
 	}
 
-	c.Success("Успешно", ctx)
+	resource := resources.GetUserResource(&user)
+
+	c.Success(resource, ctx)
 	return
 }
 
@@ -80,7 +79,7 @@ func (c AuthController) Register(ctx *gin.Context) {
 
 	resource := resources.GetUserResource(&u)
 
-	ctx.JSON(http.StatusCreated, &resource)
+	c.Success(resource, ctx)
 }
 
 func (c AuthController) CheckAuth(ctx *gin.Context) {

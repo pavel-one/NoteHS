@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"app/base"
+	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -17,9 +18,11 @@ func (c Controller) Error(errors map[string]interface{}, ctx *gin.Context) {
 	})
 }
 
-func (c Controller) Success(msg string, ctx *gin.Context) {
+func (c Controller) Success(model interface{}, ctx *gin.Context) {
+	s, _ := json.Marshal(model)
+
 	ctx.JSON(http.StatusOK, map[string]interface{}{
 		"success": true,
-		"msg":     msg,
+		"msg":     string(s),
 	})
 }
