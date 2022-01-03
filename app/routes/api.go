@@ -1,11 +1,11 @@
 package routes
 
 import (
-	"app/controllers/UserController"
+	"app/controllers"
 )
 
 func (r *Route) Api() {
-	var userController = UserController.New(r.DB)
+	var userController = controllers.NewUser(r.DB)
 
 	var api = r.Router.Group("api")
 	{

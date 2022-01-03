@@ -33,8 +33,8 @@ func (u *User) Save(db *base.DB) (bool, error) {
 	u.Password = "hashing..."
 
 	db.Create(&u)
-	u.CreateToken(db)
-	u.setActualToken(db)
+	//u.CreateToken(db)
+	//u.SetActualToken(db)
 	go u.hashPassword(db, password)
 
 	return true, nil
@@ -51,7 +51,7 @@ func (u *User) CheckPasswordHash(password string) bool {
 	return err == nil
 }
 
-func (u *User) setActualToken(db *base.DB) {
+func (u *User) SetActualToken(db *base.DB) {
 	token := UserToken{}
 	ttl, _ := strconv.Atoi(os.Getenv("TOKEN_TTL_DAY"))
 	dateWithTtl := time.Now().AddDate(0, 0, -ttl).Format("2006-01-02 15:04:05")

@@ -1,4 +1,4 @@
-package UserController
+package controllers
 
 import (
 	"app/base"
@@ -11,7 +11,7 @@ type UserController struct {
 	DB *base.DB
 }
 
-func New(db *base.DB) *UserController {
+func NewUser(db *base.DB) *UserController {
 	return &UserController{db}
 }
 

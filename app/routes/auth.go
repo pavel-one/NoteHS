@@ -1,16 +1,16 @@
 package routes
 
 import (
-	"app/controllers/AuthController"
+	"app/controllers"
 )
 
 func (r Route) Auth() {
-	c := AuthController.New(r.DB)
+	c := controllers.NewAuth(r.DB)
 
 	auth := r.Router.Group("auth")
 	{
 		auth.GET("check", c.CheckAuth)
 		auth.POST("register", c.Register)
-		auth.POST("auth", c.Auth)
+		auth.POST("/", c.Auth)
 	}
 }
