@@ -2,8 +2,6 @@ package resources
 
 import (
 	"app/models"
-	"os"
-	"strconv"
 )
 
 type UserResource struct {
@@ -20,12 +18,9 @@ func GetUserResource(user *models.User) UserResource {
 		Email: user.Email,
 	}
 
-	ttl, _ := strconv.Atoi(os.Getenv("TOKEN_TTL_DAY"))
-
 	if user.Token.Token != "" {
 		resource.Token = map[string]interface{}{
-			"token":  user.Token.Token,
-			"ttlDay": user.Token.CreatedAt.AddDate(0, 0, ttl).Sub(user.Token.CreatedAt).Seconds() / 86400,
+			"token": user.Token.Token,
 		}
 	}
 

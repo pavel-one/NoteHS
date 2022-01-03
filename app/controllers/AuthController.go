@@ -2,12 +2,10 @@ package controllers
 
 import (
 	"app/base"
-	"app/exceptions/ValidationExeption"
 	"app/models"
 	"app/requests"
 	"app/resources"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 type AuthController struct {
@@ -24,9 +22,7 @@ func (c AuthController) Auth(ctx *gin.Context) {
 	var request requests.Auth
 	var user models.User
 
-	if err := ctx.ShouldBindJSON(&request); err != nil {
-		e := ValidationExeption.New(err)
-		ctx.JSON(http.StatusBadRequest, gin.H{"errors": e.FormatToFront()})
+	if !requests.Validate(&request, ctx) {
 		return
 	}
 
@@ -45,19 +41,16 @@ func (c AuthController) Auth(ctx *gin.Context) {
 		}, ctx)
 		return
 	}
-
+	user.CreateToken(c.DB).SetActualToken(c.DB)
 	resource := resources.GetUserResource(&user)
 
 	c.Success(resource, ctx)
-	return
 }
 
 func (c AuthController) Register(ctx *gin.Context) {
 	var request requests.Register
 
-	if err := ctx.ShouldBindJSON(&request); err != nil {
-		e := ValidationExeption.New(err)
-		ctx.JSON(http.StatusBadRequest, gin.H{"errors": e.FormatToFront()})
+	if !requests.Validate(&request, ctx) {
 		return
 	}
 
@@ -82,6 +75,10 @@ func (c AuthController) Register(ctx *gin.Context) {
 	c.Success(resource, ctx)
 }
 
-func (c AuthController) CheckAuth(ctx *gin.Context) {
+func (c AuthController) User(ctx *gin.Context) {
+	//TODO: Закрыть под мидлварем
 
+	//var token models.UserToken
+
+	//c.DB.Model(&token).Where("token = ?", )
 }
