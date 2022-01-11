@@ -1,8 +1,8 @@
-## GoDockerDev
-Среда для разработки на Go
+## DEV
+В разработке
 
 
-### Старт разработки с GoDockerDev
+### Старт разработки
 1. **У вас должен быть установлен локально интерпретатор на GO**
 2. `git clone git@github.com:pavel-one/GoDockerDev.git <yourProjectName>`
 3. `cd <yourProjectName> && rm -rf .git`
