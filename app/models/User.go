@@ -3,26 +3,22 @@ package models
 import (
 	"app/base"
 	"crypto/md5"
-	"database/sql"
 	"encoding/hex"
 	"errors"
 	"golang.org/x/crypto/bcrypt"
-	"os"
-	"strconv"
 	"time"
 )
 
 type User struct {
-	ID          uint
-	Username    string
-	Name        string
-	Email       string
-	Password    string
-	ActivatedAt sql.NullTime `gorm:"type:TIMESTAMP NULL"`
-	Tokens      []UserToken  `gorm:"foreignKey:UserID;references:ID"`
-	Token       UserToken
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	ID        uint
+	Username  string
+	Name      string
+	Email     string
+	Password  string
+	Tokens    []UserToken `gorm:"foreignKey:UserID;references:ID"`
+	Token     UserToken
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 func (u *User) Save(db *base.DB) (bool, error) {
@@ -55,14 +51,8 @@ func (u *User) CheckPasswordHash(password string) bool {
 
 func (u *User) SetActualToken(db *base.DB) *User {
 	token := UserToken{}
-	ttl, _ := strconv.Atoi(os.Getenv("TOKEN_TTL_DAY"))
-	dateWithTtl := time.Now().AddDate(0, 0, -ttl).Format("2006-01-02 15:04:05")
-
-	//TODO: Неправильная выборка актуального токена
-	db.Model(&token).Order("created_at desc").Where("created_at >= ? and user_id = ?", dateWithTtl, u.ID).First(&token)
-
+	db.Model(&token).Order("created_at desc").First(&token)
 	u.Token = token
-
 	return u
 }
 

@@ -5,10 +5,10 @@ import (
 )
 
 type UserResource struct {
-	Id    uint                   `json:"id"`
-	Name  string                 `json:"name"`
-	Email string                 `json:"email"`
-	Token map[string]interface{} `json:"token"`
+	Id    uint   `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
+	Token string `json:"token"`
 }
 
 func GetUserResource(user *models.User) UserResource {
@@ -19,9 +19,7 @@ func GetUserResource(user *models.User) UserResource {
 	}
 
 	if user.Token.Token != "" {
-		resource.Token = map[string]interface{}{
-			"token": user.Token.Token,
-		}
+		resource.Token = user.Token.Token
 	}
 
 	return resource

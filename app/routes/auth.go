@@ -9,7 +9,6 @@ func (r Route) Auth() {
 
 	auth := r.Router.Group("auth")
 	{
-		auth.GET("/", c.User)
 		auth.POST("register", c.Register)
 		auth.POST("/", c.Auth)
 	}

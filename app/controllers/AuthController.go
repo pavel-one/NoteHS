@@ -74,11 +74,3 @@ func (c AuthController) Register(ctx *gin.Context) {
 
 	c.Success(resource, ctx)
 }
-
-func (c AuthController) User(ctx *gin.Context) {
-	//TODO: Закрыть под мидлварем
-
-	//var token models.UserToken
-
-	//c.DB.Model(&token).Where("token = ?", )
-}

@@ -5,7 +5,6 @@ create table users
     name            varchar,
     email           varchar unique,
     password        varchar not null,
-    activated_at    timestamp,
     created_at      timestamp not null,
     updated_at      timestamp not null
 );

@@ -2,33 +2,25 @@ package controllers
 
 import (
 	"app/base"
-	"app/models"
-	"github.com/brianvoe/gofakeit/v6"
+	"app/helpers"
+	"app/resources"
 	"github.com/gin-gonic/gin"
 )
 
 type UserController struct {
-	DB *base.DB
+	*Controller
+}
+
+func (c UserController) User(ctx *gin.Context) {
+	token, _ := helpers.GetToken(ctx)
+	user, _ := helpers.GetUserWithToken(token, c.DB)
+	resource := resources.GetUserResource(&user)
+
+	ctx.JSON(200, resource)
 }
 
 func NewUser(db *base.DB) *UserController {
-	return &UserController{db}
-}
+	controller := Controller{DB: db}
 
-func (c UserController) Index(ctx *gin.Context) {
-	var users []models.User
-
-	c.DB.Find(&users)
-
-	ctx.JSON(200, &users)
-}
-
-func (c UserController) Create(ctx *gin.Context) {
-	var u = models.User{
-		Username: gofakeit.Username(),
-		Name:     gofakeit.Person().FirstName,
-	}
-	c.DB.Create(&u)
-
-	ctx.JSON(201, &u)
+	return &UserController{&controller}
 }

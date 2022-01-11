@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"app/base"
+	"app/helpers"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -22,4 +23,22 @@ func (c Controller) Success(model interface{}, ctx *gin.Context) {
 		"success":  true,
 		"resource": model,
 	})
+}
+
+func (c Controller) AuthMiddleware(ctx *gin.Context) {
+	tokenString, err := helpers.GetToken(ctx)
+	if err != nil {
+		ctx.AbortWithStatus(403)
+		return
+	}
+
+	user, err := helpers.GetUserWithToken(tokenString, c.DB)
+	if err != nil {
+		ctx.AbortWithStatus(403)
+		return
+	}
+
+	user.Token.UpdateUse(c.DB)
+
+	ctx.Next()
 }

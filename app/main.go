@@ -7,7 +7,7 @@ import (
 
 func main() {
 	var app = core.NewApp()
-	app.LoadRoutes(app.Route.Auth, app.Route.Api)
+	app.LoadRoutes(app.Route.Auth, app.Route.User)
 
 	app.Run()
 }
