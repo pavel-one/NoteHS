@@ -5,6 +5,7 @@ import (
 	"app/base"
 	"app/requests"
 	"log"
+	"os"
 	"strconv"
 	"time"
 )
@@ -62,4 +63,12 @@ func (dial *Dial) SetProcessEnd(db *base.DB) {
 
 	dial.Final = true
 	db.Save(dial)
+}
+
+func (dial *Dial) DropDialWithFiles(db *base.DB) {
+	if dial.Screen != "" {
+		_ = os.Remove(dial.Screen)
+	}
+
+	db.Delete(dial)
 }

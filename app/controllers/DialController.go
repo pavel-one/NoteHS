@@ -7,6 +7,7 @@ import (
 	"app/requests"
 	"app/resources"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 type DialController struct {
@@ -76,5 +77,45 @@ func (c DialController) EditDial(ctx *gin.Context) {
 	go dial.CreateOrUpdateInfo(c.DB)
 
 	c.Success(resources.DialResource(&dial), ctx)
+	return
+}
+
+func (c DialController) GetDialInfo(ctx *gin.Context) {
+	var dial models.Dial
+	token, _ := helpers.GetToken(ctx)
+	user, _ := helpers.GetUserWithToken(token, c.DB)
+
+	c.DB.Where("id = ? and user_id = ?", ctx.Param("id"), user.ID).First(&dial)
+
+	if dial.ID == 0 {
+		c.Error(map[string]interface{}{
+			"message": "Нет такого диала, или он вам не пренадлежит",
+		}, ctx)
+		return
+	}
+
+	c.Success(resources.DialResource(&dial), ctx)
+	return
+}
+
+func (c DialController) DropDial(ctx *gin.Context) {
+	var dial models.Dial
+	token, _ := helpers.GetToken(ctx)
+	user, _ := helpers.GetUserWithToken(token, c.DB)
+
+	c.DB.Where("id = ? and user_id = ?", ctx.Param("id"), user.ID).First(&dial)
+
+	if dial.ID == 0 {
+		c.Error(map[string]interface{}{
+			"message": "Нет такого диала, или он вам не пренадлежит",
+		}, ctx)
+		return
+	}
+
+	dial.DropDialWithFiles(c.DB)
+
+	ctx.JSON(http.StatusOK, map[string]interface{}{
+		"success": true,
+	})
 	return
 }
