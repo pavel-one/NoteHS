@@ -37,6 +37,7 @@ func getTagText(tagName string, param string) string {
 	texts["max"] = fmt.Sprintf("Максимальное количество символов: %s", param)
 	texts["required"] = "Поле обязательно для заполнения"
 	texts["email"] = "Введенное значение не является адресом электронной почты"
+	texts["url"] = "Введенное значение не является адресом сайта"
 
 	tagName = strings.ToLower(tagName)
 

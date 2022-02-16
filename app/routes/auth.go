@@ -5,11 +5,17 @@ import (
 )
 
 func (r Route) Auth() {
-	c := controllers.NewAuth(r.DB)
+	userController := controllers.NewUser(r.DB)
+	dialController := controllers.NewDialController(r.DB)
 
-	auth := r.Router.Group("auth")
+	user := r.Router.Group("user").Use(userController.AuthMiddleware)
 	{
-		auth.POST("register", c.Register)
-		auth.POST("/", c.Auth)
+		user.GET("/", userController.User)
+	}
+
+	dial := r.Router.Group("dial").Use(dialController.AuthMiddleware)
+	{
+		dial.GET("/", dialController.GetAllDials)
+		dial.PUT("/", dialController.CreateDial)
 	}
 }

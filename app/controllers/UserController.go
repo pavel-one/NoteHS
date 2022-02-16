@@ -16,7 +16,7 @@ func (c UserController) User(ctx *gin.Context) {
 	user, _ := helpers.GetUserWithToken(token, c.DB)
 	resource := resources.GetUserResource(&user)
 
-	ctx.JSON(200, resource)
+	c.Success(resource, ctx)
 }
 
 func NewUser(db *base.DB) *UserController {

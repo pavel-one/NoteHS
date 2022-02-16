@@ -17,6 +17,7 @@ type User struct {
 	Password  string
 	Tokens    []UserToken `gorm:"foreignKey:UserID;references:ID"`
 	Token     UserToken
+	Dials     []Dial
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
