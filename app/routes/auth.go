@@ -17,5 +17,7 @@ func (r Route) Auth() {
 	{
 		dial.GET("/", dialController.GetAllDials)
 		dial.PUT("/", dialController.CreateDial)
+
+		dial.POST("/:id", dialController.EditDial)
 	}
 }

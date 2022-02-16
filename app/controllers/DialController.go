@@ -1,15 +1,12 @@
 package controllers
 
 import (
-	"app/Services/Scrapper"
 	"app/base"
 	"app/helpers"
 	"app/models"
 	"app/requests"
 	"app/resources"
 	"github.com/gin-gonic/gin"
-	"log"
-	"strconv"
 )
 
 type DialController struct {
@@ -34,6 +31,7 @@ func (c DialController) GetAllDials(ctx *gin.Context) {
 
 func (c DialController) CreateDial(ctx *gin.Context) {
 	var request requests.CreateDialRequest
+	var dial models.Dial
 	token, _ := helpers.GetToken(ctx)
 	user, _ := helpers.GetUserWithToken(token, c.DB)
 
@@ -41,30 +39,41 @@ func (c DialController) CreateDial(ctx *gin.Context) {
 		return
 	}
 
-	dial := models.Dial{
-		Url: request.Url,
-	}
+	dial.FillWithRequest(c.DB, request)
 
 	user.Dials = []models.Dial{dial}
 	c.DB.Save(&user)
-	dial = user.Dials[0]
+	dial = user.Dials[0] //With id
 
-	//TODO: Вынести нахер отсюда
-	go func() {
-		defer func() {
-			dial.Final = true
-			c.DB.Save(&dial)
-		}()
+	dial.SetProcess(c.DB)
+	go dial.CreateOrUpdateInfo(c.DB)
 
-		url, err := Scrapper.GetUrlInfo(dial.Url, strconv.Itoa(int(dial.ID)))
-		if err != nil {
-			log.Println(err)
-			return
-		}
-		dial.Name = url.Title
-		dial.Screen = url.Screen
+	c.Success(resources.DialResource(&dial), ctx)
+	return
+}
+func (c DialController) EditDial(ctx *gin.Context) {
+	var request requests.CreateDialRequest
+	var dial models.Dial
+	token, _ := helpers.GetToken(ctx)
+	user, _ := helpers.GetUserWithToken(token, c.DB)
 
-	}()
+	c.DB.Where("id = ? and user_id = ?", ctx.Param("id"), user.ID).First(&dial)
+
+	if dial.ID == 0 {
+		c.Error(map[string]interface{}{
+			"message": "Нет такого диала, или он вам не пренадлежит",
+		}, ctx)
+		return
+	}
+
+	if !requests.Validate(&request, ctx) {
+		return
+	}
+
+	dial.FillWithRequest(c.DB, request)
+	c.DB.Save(&dial)
+	dial.SetProcess(c.DB)
+	go dial.CreateOrUpdateInfo(c.DB)
 
 	c.Success(resources.DialResource(&dial), ctx)
 	return
