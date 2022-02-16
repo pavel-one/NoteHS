@@ -13,5 +13,7 @@ func LoadRouter() Router {
 		Engine: gin.Default(),
 	}
 
+	r.Static("storage/screenshot/", "./storage/screenshot/")
+
 	return r
 }
