@@ -2,13 +2,14 @@ package models
 
 import (
 	"app/base"
+	"gopkg.in/guregu/null.v4"
 	"time"
 )
 
 type UserToken struct {
 	ID        uint
 	UserID    uint
-	Token     string
+	Token     null.String
 	LatestUse time.Time
 	CreatedAt time.Time
 	UpdatedAt time.Time

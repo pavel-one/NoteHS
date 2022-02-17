@@ -19,8 +19,8 @@ func GetUserResource(user *models.User) UserResource {
 		Email: user.Email,
 	}
 
-	if user.Token.Token != "" {
-		resource.Token = null.StringFrom(user.Token.Token)
+	if user.Token.Token.Valid {
+		resource.Token = user.Token.Token
 	}
 
 	return resource

@@ -38,7 +38,7 @@ func (u *User) Save(db *base.DB) (bool, error) {
 }
 
 func (u *User) CreateToken(db *base.DB) *User {
-	token := UserToken{Token: u.generateToken()}
+	token := UserToken{Token: null.StringFrom(u.generateToken())}
 	u.Tokens = []UserToken{token}
 	db.Save(u)
 
