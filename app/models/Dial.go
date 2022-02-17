@@ -4,6 +4,7 @@ import (
 	"app/Services/Scrapper"
 	"app/base"
 	"app/requests"
+	"gopkg.in/guregu/null.v4"
 	"log"
 	"os"
 	"strconv"
@@ -13,9 +14,9 @@ import (
 type Dial struct {
 	ID          uint
 	UserID      uint
-	Name        string
-	Description string
-	Screen      string
+	Name        null.String
+	Description null.String
+	Screen      null.String
 	Url         string
 	Final       bool
 	CreatedAt   time.Time
@@ -38,12 +39,12 @@ func (dial *Dial) CreateOrUpdateInfo(db *base.DB) {
 		return
 	}
 
-	if dial.Name == "" {
-		dial.Name = url.Title
+	if !dial.Name.Valid {
+		dial.Name = null.StringFrom(url.Title)
 	}
 
-	if dial.Screen == "" {
-		dial.Screen = url.Screen
+	if !dial.Screen.Valid {
+		dial.Screen = null.StringFrom(url.Screen)
 	}
 }
 
@@ -66,8 +67,8 @@ func (dial *Dial) SetProcessEnd(db *base.DB) {
 }
 
 func (dial *Dial) DropDialWithFiles(db *base.DB) {
-	if dial.Screen != "" {
-		_ = os.Remove(dial.Screen)
+	if dial.Screen.Valid {
+		_ = os.Remove(dial.Screen.String)
 	}
 
 	db.Delete(dial)

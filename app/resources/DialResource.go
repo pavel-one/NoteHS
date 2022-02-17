@@ -1,14 +1,17 @@
 package resources
 
-import "app/models"
+import (
+	"app/models"
+	"gopkg.in/guregu/null.v4"
+)
 
 type dialResource struct {
-	Id          uint   `json:"id"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Screen      string `json:"screen"`
-	Url         string `json:"url"`
-	Final       bool   `json:"final"`
+	Id          uint        `json:"id"`
+	Name        null.String `json:"name"`
+	Description null.String `json:"description"`
+	Screen      null.String `json:"screen"`
+	Url         string      `json:"url"`
+	Final       bool        `json:"final"`
 }
 
 func DialResource(dial *models.Dial) *dialResource {
