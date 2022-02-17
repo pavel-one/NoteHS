@@ -38,6 +38,7 @@ func getTagText(tagName string, param string) string {
 	texts["required"] = "Поле обязательно для заполнения"
 	texts["email"] = "Введенное значение не является адресом электронной почты"
 	texts["url"] = "Введенное значение не является адресом сайта"
+	texts["uuid"] = "Введенное значение не является uuid"
 
 	tagName = strings.ToLower(tagName)
 

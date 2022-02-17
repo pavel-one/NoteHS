@@ -27,7 +27,7 @@ func (c AuthController) Auth(ctx *gin.Context) {
 	}
 
 	//Normal auth
-	if request.Email.String != "" {
+	if request.Email.Valid {
 		c.DB.Model(&user).Where("email = ?", request.Email.String).First(&user)
 
 		if user.ID == 0 {
@@ -51,7 +51,7 @@ func (c AuthController) Auth(ctx *gin.Context) {
 	}
 
 	//Auth with google id
-	if request.GoogleID.String != "" {
+	if request.GoogleID.Valid {
 		c.DB.Model(&user).Where("google_id = ?", request.GoogleID.String).First(&user)
 
 		if user.ID == 0 {
