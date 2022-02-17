@@ -3,10 +3,10 @@ package models
 import (
 	"app/base"
 	"crypto/md5"
-	"database/sql"
 	"encoding/hex"
 	"errors"
 	"golang.org/x/crypto/bcrypt"
+	"gopkg.in/guregu/null.v4"
 	"time"
 )
 
@@ -16,7 +16,7 @@ type User struct {
 	Name      string
 	Email     string
 	Password  string
-	GoogleID  sql.NullString
+	GoogleID  null.String
 	Tokens    []UserToken `gorm:"foreignKey:UserID;references:ID"`
 	Token     UserToken
 	Dials     []Dial

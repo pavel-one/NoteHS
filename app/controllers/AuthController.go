@@ -5,7 +5,6 @@ import (
 	"app/models"
 	"app/requests"
 	"app/resources"
-	"database/sql"
 	"github.com/gin-gonic/gin"
 )
 
@@ -56,7 +55,7 @@ func (c AuthController) Auth(ctx *gin.Context) {
 		c.DB.Model(&user).Where("google_id = ?", request.GoogleID.String).First(&user)
 
 		if user.ID == 0 {
-			user.GoogleID = sql.NullString{String: request.GoogleID.String, Valid: request.GoogleID.Valid}
+			user.GoogleID = request.GoogleID
 			c.DB.Save(&user)
 		}
 
