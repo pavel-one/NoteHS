@@ -2,13 +2,14 @@ package resources
 
 import (
 	"app/models"
+	"gopkg.in/guregu/null.v4"
 )
 
 type UserResource struct {
-	Id    uint   `json:"id"`
-	Name  string `json:"name"`
-	Email string `json:"email"`
-	Token string `json:"token"`
+	Id    uint        `json:"id"`
+	Name  null.String `json:"name"`
+	Email null.String `json:"email"`
+	Token null.String `json:"token"`
 }
 
 func GetUserResource(user *models.User) UserResource {
@@ -19,7 +20,7 @@ func GetUserResource(user *models.User) UserResource {
 	}
 
 	if user.Token.Token != "" {
-		resource.Token = user.Token.Token
+		resource.Token = null.StringFrom(user.Token.Token)
 	}
 
 	return resource
