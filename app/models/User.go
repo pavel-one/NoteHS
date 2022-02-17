@@ -3,6 +3,7 @@ package models
 import (
 	"app/base"
 	"crypto/md5"
+	"database/sql"
 	"encoding/hex"
 	"errors"
 	"golang.org/x/crypto/bcrypt"
@@ -15,6 +16,7 @@ type User struct {
 	Name      string
 	Email     string
 	Password  string
+	GoogleID  sql.NullString
 	Tokens    []UserToken `gorm:"foreignKey:UserID;references:ID"`
 	Token     UserToken
 	Dials     []Dial

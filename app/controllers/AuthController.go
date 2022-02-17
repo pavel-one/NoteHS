@@ -5,6 +5,7 @@ import (
 	"app/models"
 	"app/requests"
 	"app/resources"
+	"database/sql"
 	"github.com/gin-gonic/gin"
 )
 
@@ -26,25 +27,48 @@ func (c AuthController) Auth(ctx *gin.Context) {
 		return
 	}
 
-	c.DB.Model(&user).Where("email = ?", request.Email).First(&user)
+	//Normal auth
+	if request.Email.String != "" {
+		c.DB.Model(&user).Where("email = ?", request.Email.String).First(&user)
 
-	if user.ID == 0 {
-		c.Error(map[string]interface{}{
-			"email": "Не правильное имя пользователя или пароль",
-		}, ctx)
+		if user.ID == 0 {
+			c.Error(map[string]interface{}{
+				"email": "Не правильное имя пользователя или пароль",
+			}, ctx)
+			return
+		}
+
+		if !user.CheckPasswordHash(request.Password.String) {
+			c.Error(map[string]interface{}{
+				"email": "Не правильное имя пользователя или пароль",
+			}, ctx)
+			return
+		}
+		user.CreateToken(c.DB).SetActualToken(c.DB)
+		resource := resources.GetUserResource(&user)
+
+		c.Success(resource, ctx)
 		return
 	}
 
-	if !user.CheckPasswordHash(request.Password) {
-		c.Error(map[string]interface{}{
-			"email": "Не правильное имя пользователя или пароль",
-		}, ctx)
+	//Auth with google id
+	if request.GoogleID.String != "" {
+		c.DB.Model(&user).Where("google_id = ?", request.GoogleID.String).First(&user)
+
+		if user.ID == 0 {
+			user.GoogleID = sql.NullString{String: request.GoogleID.String, Valid: request.GoogleID.Valid}
+			c.DB.Save(&user)
+		}
+
+		user.CreateToken(c.DB).SetActualToken(c.DB)
+		resource := resources.GetUserResource(&user)
+
+		c.Success(resource, ctx)
 		return
 	}
-	user.CreateToken(c.DB).SetActualToken(c.DB)
-	resource := resources.GetUserResource(&user)
 
-	c.Success(resource, ctx)
+	ctx.Abort()
+	return
 }
 
 func (c AuthController) Register(ctx *gin.Context) {
