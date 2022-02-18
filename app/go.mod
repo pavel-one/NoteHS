@@ -14,6 +14,7 @@ require (
 	github.com/chromedp/cdproto v0.0.0-20220212213330-2a526947c808 // indirect
 	github.com/chromedp/chromedp v0.7.7 // indirect
 	github.com/chromedp/sysutil v1.0.0 // indirect
+	github.com/gin-contrib/cors v1.3.1 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
