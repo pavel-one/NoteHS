@@ -7,6 +7,7 @@ import (
 	"app/requests"
 	"app/resources"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"net/http"
 )
 
@@ -24,7 +25,10 @@ func (c DialController) GetAllDials(ctx *gin.Context) {
 	token, _ := helpers.GetToken(ctx)
 	user, _ := helpers.GetUserWithToken(token, c.DB)
 
-	c.DB.Model(&user).Preload("Dials").First(&user)
+	c.DB.Model(&user).Preload("Dials", func(db *gorm.DB) *gorm.DB {
+		db = db.Order("created_at desc")
+		return db
+	}).First(&user)
 
 	c.Success(resources.DialResources(user.Dials), ctx)
 	return
