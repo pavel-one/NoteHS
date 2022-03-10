@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"time"
 )
 
 type Url struct {
@@ -36,6 +37,16 @@ func GetUrlInfo(url string, filename string) (Url, error) {
 	err := chromedp.Run(
 		ctx,
 		chromedp.Navigate(url),
+	)
+
+	if err != nil {
+		return Url{}, err
+	}
+
+	time.Sleep(3 * time.Second)
+
+	err = chromedp.Run(
+		ctx,
 		chromedp.CaptureScreenshot(&buf),
 		chromedp.Title(&title),
 	)
