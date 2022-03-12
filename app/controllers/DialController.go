@@ -68,7 +68,8 @@ func (c DialController) SyncPopularDials(ctx *gin.Context) {
 		dials = append(dials, dial)
 	}
 
-	ctx.JSON(http.StatusOK, resources.DialResources(dials))
+	c.Success(resources.DialResources(dials), ctx)
+	return
 }
 
 func (c DialController) CreateDial(ctx *gin.Context) {
