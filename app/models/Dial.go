@@ -19,6 +19,7 @@ type Dial struct {
 	Screen      null.String
 	Url         string
 	Final       bool
+	Type        int
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }

@@ -11,6 +11,7 @@ func (r Route) Auth() {
 	user := r.Router.Group("user").Use(userController.AuthMiddleware)
 	{
 		user.GET("/", userController.User)
+		user.POST("/sync/popular", dialController.SyncPopularDials)
 	}
 
 	dial := r.Router.Group("dial").Use(dialController.AuthMiddleware)

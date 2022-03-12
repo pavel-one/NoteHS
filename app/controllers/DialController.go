@@ -26,12 +26,49 @@ func (c DialController) GetAllDials(ctx *gin.Context) {
 	user, _ := helpers.GetUserWithToken(token, c.DB)
 
 	c.DB.Model(&user).Preload("Dials", func(db *gorm.DB) *gorm.DB {
-		db = db.Order("created_at desc")
+		db = db.Where("type = ?", ctx.Query("type")).Order("created_at desc")
 		return db
 	}).First(&user)
 
 	c.Success(resources.DialResources(user.Dials), ctx)
 	return
+}
+
+func (c DialController) SyncPopularDials(ctx *gin.Context) {
+	var request requests.SyncDialRequest
+	var dials []models.Dial
+
+	token, _ := helpers.GetToken(ctx)
+	user, _ := helpers.GetUserWithToken(token, c.DB)
+
+	if !requests.Validate(&request, ctx) {
+		return
+	}
+
+	for _, v := range request.Dials {
+		var dial models.Dial
+
+		url := v.(map[string]interface{})["url"].(string)
+
+		c.DB.Model(&dial).Where("user_id = ? and url = ? and type = ?", user.ID, url, 1).First(&dial)
+
+		if dial.ID != 0 {
+			dials = append(dials, dial)
+			continue
+		}
+
+		dial.Url = url
+		dial.UserID = user.ID
+		dial.Type = 1
+
+		c.DB.Save(&dial)
+
+		dial.SetProcess(c.DB)
+		go dial.CreateOrUpdateInfo(c.DB)
+		dials = append(dials, dial)
+	}
+
+	ctx.JSON(http.StatusOK, resources.DialResources(dials))
 }
 
 func (c DialController) CreateDial(ctx *gin.Context) {
