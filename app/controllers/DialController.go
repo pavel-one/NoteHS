@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"net/http"
+	"time"
 )
 
 type DialController struct {
@@ -134,6 +135,13 @@ func (c DialController) GetDialInfo(ctx *gin.Context) {
 			"message": "Нет такого диала, или он вам не пренадлежит",
 		}, ctx)
 		return
+	}
+
+	if !dial.Final {
+		diff := time.Now().Sub(dial.CreatedAt).Minutes()
+		if diff > 1 {
+			dial.SetProcessEnd(c.DB)
+		}
 	}
 
 	c.Success(resources.DialResource(&dial), ctx)
