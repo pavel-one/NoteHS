@@ -20,6 +20,7 @@ type Dial struct {
 	Url         string
 	Final       bool
 	Type        int
+	Deleted     bool
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
@@ -67,9 +68,15 @@ func (dial *Dial) SetProcessEnd(db *base.DB) {
 	db.Save(dial)
 }
 
-func (dial *Dial) DropDialWithFiles(db *base.DB) {
+func (dial *Dial) DropDialWithFiles(db *base.DB, fake bool) {
 	if dial.Screen.Valid {
 		_ = os.Remove(dial.Screen.String)
+	}
+
+	if fake {
+		dial.Deleted = true
+		db.Save(dial)
+		return
 	}
 
 	db.Delete(dial)

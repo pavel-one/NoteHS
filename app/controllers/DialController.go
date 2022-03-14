@@ -26,7 +26,7 @@ func (c DialController) GetAllDials(ctx *gin.Context) {
 	user, _ := helpers.GetUserWithToken(token, c.DB)
 
 	c.DB.Model(&user).Preload("Dials", func(db *gorm.DB) *gorm.DB {
-		db = db.Where("type = ?", ctx.Query("type")).Order("created_at desc")
+		db = db.Where("type = ? and deleted = ?", ctx.Query("type"), false).Order("created_at desc")
 		return db
 	}).First(&user)
 
@@ -100,7 +100,7 @@ func (c DialController) EditDial(ctx *gin.Context) {
 	token, _ := helpers.GetToken(ctx)
 	user, _ := helpers.GetUserWithToken(token, c.DB)
 
-	c.DB.Where("id = ? and user_id = ?", ctx.Param("id"), user.ID).First(&dial)
+	c.DB.Where("id = ? and user_id = ? and deleted = ?", ctx.Param("id"), user.ID, false).First(&dial)
 
 	if dial.ID == 0 {
 		c.Error(map[string]interface{}{
@@ -127,7 +127,7 @@ func (c DialController) GetDialInfo(ctx *gin.Context) {
 	token, _ := helpers.GetToken(ctx)
 	user, _ := helpers.GetUserWithToken(token, c.DB)
 
-	c.DB.Where("id = ? and user_id = ?", ctx.Param("id"), user.ID).First(&dial)
+	c.DB.Where("id = ? and user_id = ? and deleted = ?", ctx.Param("id"), user.ID, false).First(&dial)
 
 	if dial.ID == 0 {
 		c.Error(map[string]interface{}{
@@ -154,7 +154,12 @@ func (c DialController) DropDial(ctx *gin.Context) {
 		return
 	}
 
-	dial.DropDialWithFiles(c.DB)
+	fake := false
+	if dial.Type == 1 {
+		fake = true
+	}
+
+	dial.DropDialWithFiles(c.DB, fake)
 
 	ctx.JSON(http.StatusOK, map[string]interface{}{
 		"success": true,
