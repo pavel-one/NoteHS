@@ -34,7 +34,7 @@ func (dial *Dial) CreateOrUpdateInfo(db *base.DB) {
 
 	defer dial.SetProcessEnd(db)
 
-	url, err := Scrapper.GetUrlInfo(dial.Url, strconv.Itoa(int(dial.ID)))
+	url, err := Scrapper.GetUrlInfo(dial.Url, strconv.Itoa(int(dial.ID)), dial.UserID)
 	if err != nil {
 		log.Println(err)
 		return

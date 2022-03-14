@@ -2,6 +2,7 @@ package Scrapper
 
 import (
 	"context"
+	"fmt"
 	"github.com/chromedp/chromedp"
 	"io/ioutil"
 	"log"
@@ -16,7 +17,7 @@ type Url struct {
 	Description string
 }
 
-func GetUrlInfo(url string, filename string) (Url, error) {
+func GetUrlInfo(url string, filename string, userId uint) (Url, error) {
 	var buf []byte
 	var title string
 
@@ -55,7 +56,7 @@ func GetUrlInfo(url string, filename string) (Url, error) {
 		return Url{}, err
 	}
 
-	screenshot, err := saveScreenshot(buf, filename)
+	screenshot, err := saveScreenshot(buf, filename, userId)
 	if err != nil {
 		return Url{}, err
 	}
@@ -67,9 +68,9 @@ func GetUrlInfo(url string, filename string) (Url, error) {
 	}, nil
 }
 
-func saveScreenshot(buffer []byte, name string) (string, error) {
+func saveScreenshot(buffer []byte, name string, userId uint) (string, error) {
 
-	dir := "storage/screenshot/"
+	dir := fmt.Sprintf("storage/screenshot/%v/", userId)
 	path := dir + name + ".png"
 
 	err := os.MkdirAll(dir, 0777)
