@@ -4,6 +4,7 @@ import (
 	"app/validations"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"os"
 	"time"
 )
 
@@ -12,13 +13,13 @@ type Router struct {
 }
 
 func LoadRouter() Router {
+	gin.SetMode(os.Getenv("GIN_MODE"))
+
 	var r = Router{
 		Engine: gin.Default(),
 	}
 
 	validations.SetNullValidators()
-
-	r.Static("storage/screenshot/", "./storage/screenshot/")
 
 	r.Use(cors.New(cors.Config{
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"},

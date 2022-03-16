@@ -5,6 +5,7 @@ import (
 	"app/routes"
 	"github.com/joho/godotenv"
 	"log"
+	"os"
 )
 
 type App struct {
@@ -31,11 +32,18 @@ func NewApp() *App {
 }
 
 func (a App) Run() {
-	err := a.Router.Run(":8080")
-
-	if err != nil {
-		log.Fatal("Ошибка запуска сервера " + err.Error())
+	if os.Getenv("GIN_MODE") != "production" {
+		err := a.Router.Run(":1200")
+		if err != nil {
+			log.Fatal("Ошибка запуска сервера " + err.Error())
+		}
+	} else {
+		err := a.Router.Run("127.0.0.1:1200")
+		if err != nil {
+			log.Fatal("Ошибка запуска сервера " + err.Error())
+		}
 	}
+
 }
 
 func (a App) LoadRoutes(providers ...func()) {

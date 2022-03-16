@@ -1,6 +1,6 @@
 #!/bin/bash
 
-process_id=$(lsof -t -i:8080)
+process_id=$(lsof -t -i:1200)
 
 if [ -n "${process_id}" ]; then
     echo "Kill process ${process_id}"
