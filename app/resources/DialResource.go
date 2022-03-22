@@ -15,11 +15,18 @@ type dialResource struct {
 }
 
 func DialResource(dial *models.Dial) *dialResource {
+	var ScreenUrl null.String
+
+	if dial.Screen.Valid {
+		ScreenUrl.String = dial.Screen.String
+		ScreenUrl.Valid = true
+	}
+
 	resource := dialResource{
 		Id:          dial.ID,
 		Name:        dial.Name,
 		Description: dial.Description,
-		Screen:      dial.Screen,
+		Screen:      ScreenUrl,
 		Url:         dial.Url,
 		Final:       dial.Final,
 	}
