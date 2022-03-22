@@ -16,6 +16,3 @@ jobs:
           user: ${{secrets.USER}}
           key: ${{secrets.KEY}}
           dir: ${{secrets.DIR}}
-          dbuser: notehs
-          dbpassword: ${{secrets.DB_PASSWORD}}
-          url: https://notehs.pavel.one
