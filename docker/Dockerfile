@@ -1,4 +1,4 @@
-FROM golang
+FROM golang:1.18
 
 ARG docker_id
 ARG docker_user

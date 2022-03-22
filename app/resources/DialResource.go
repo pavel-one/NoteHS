@@ -3,6 +3,7 @@ package resources
 import (
 	"app/models"
 	"gopkg.in/guregu/null.v4"
+	"os"
 )
 
 type dialResource struct {
@@ -18,7 +19,7 @@ func DialResource(dial *models.Dial) *dialResource {
 	var ScreenUrl null.String
 
 	if dial.Screen.Valid {
-		ScreenUrl.String = dial.Screen.String
+		ScreenUrl.String = os.Getenv("BASE_URL") + dial.Screen.String
 		ScreenUrl.Valid = true
 	}
 
