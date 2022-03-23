@@ -7,7 +7,7 @@ import (
 )
 
 func Validate(r interface{}, ctx *gin.Context) bool {
-	err := ctx.ShouldBindJSON(r)
+	err := ctx.ShouldBind(r)
 
 	if err == nil {
 		return true
