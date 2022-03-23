@@ -4,10 +4,11 @@ import (
 	"app/Services/Scrapper"
 	"app/base"
 	"app/requests"
+	"crypto/md5"
+	"encoding/hex"
 	"gopkg.in/guregu/null.v4"
 	"log"
 	"os"
-	"strconv"
 	"time"
 )
 
@@ -28,14 +29,18 @@ type Dial struct {
 func (dial *Dial) FillWithRequest(db *base.DB, request requests.CreateDialRequest) {
 	dial.Url = request.Url
 	dial.Description = request.Description
-	dial.Name = request.Description
+	dial.Name = request.Name
 }
 
 func (dial *Dial) CreateOrUpdateInfo(db *base.DB) {
-
 	defer dial.SetProcessEnd(db)
 
-	url, err := Scrapper.GetUrlInfo(dial.Url, strconv.Itoa(int(dial.ID)), dial.UserID)
+	hasher := md5.New()
+	hasher.Write([]byte(dial.Url))
+
+	filename := hex.EncodeToString(hasher.Sum(nil))
+
+	url, err := Scrapper.GetUrlInfo(dial.Url, filename, dial.UserID)
 	if err != nil {
 		log.Println(err)
 		return
@@ -48,6 +53,23 @@ func (dial *Dial) CreateOrUpdateInfo(db *base.DB) {
 	if !dial.Screen.Valid {
 		dial.Screen = null.StringFrom(url.Screen)
 	}
+}
+
+func (dial *Dial) UpdatePhoto(db *base.DB) {
+	defer dial.SetProcessEnd(db)
+
+	hasher := md5.New()
+	hasher.Write([]byte(dial.Url))
+
+	filename := hex.EncodeToString(hasher.Sum(nil))
+
+	url, err := Scrapper.GetUrlInfo(dial.Url, filename, dial.UserID)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	dial.Screen = null.StringFrom(url.Screen)
 }
 
 func (dial *Dial) SetProcess(db *base.DB) {

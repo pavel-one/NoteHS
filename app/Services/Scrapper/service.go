@@ -31,8 +31,8 @@ func GetUrlInfo(url string, filename string, userId uint) (Url, error) {
 	)
 
 	allocCtx, cancel := chromedp.NewExecAllocator(context.Background(), opts...)
-	defer cancel()
 	ctx, cancel := chromedp.NewContext(allocCtx, chromedp.WithLogf(log.Printf))
+
 	defer cancel()
 
 	err := chromedp.Run(

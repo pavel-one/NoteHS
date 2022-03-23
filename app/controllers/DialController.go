@@ -110,14 +110,23 @@ func (c DialController) EditDial(ctx *gin.Context) {
 		return
 	}
 
+	updatePhoto := false
+
 	if !requests.Validate(&request, ctx) {
 		return
 	}
 
+	if request.Url != dial.Url {
+		updatePhoto = true
+	}
+
 	dial.FillWithRequest(c.DB, request)
 	c.DB.Save(&dial)
-	dial.SetProcess(c.DB)
-	go dial.CreateOrUpdateInfo(c.DB)
+
+	if updatePhoto {
+		dial.SetProcess(c.DB)
+		go dial.UpdatePhoto(c.DB)
+	}
 
 	c.Success(resources.DialResource(&dial), ctx)
 	return
@@ -138,7 +147,7 @@ func (c DialController) GetDialInfo(ctx *gin.Context) {
 	}
 
 	if !dial.Final {
-		diff := time.Now().Sub(dial.CreatedAt).Minutes()
+		diff := time.Now().Sub(dial.UpdatedAt).Minutes()
 		if diff > 1 {
 			dial.SetProcessEnd(c.DB)
 		}
