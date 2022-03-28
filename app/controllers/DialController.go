@@ -96,7 +96,7 @@ func (c DialController) CreateDial(ctx *gin.Context) {
 	return
 }
 func (c DialController) EditDial(ctx *gin.Context) {
-	var request requests.CreateDialRequest
+	var request requests.EditDialRequest
 	var dial models.Dial
 	token, _ := helpers.GetToken(ctx)
 	user, _ := helpers.GetUserWithToken(token, c.DB)

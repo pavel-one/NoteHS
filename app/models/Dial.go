@@ -26,10 +26,10 @@ type Dial struct {
 	UpdatedAt   time.Time
 }
 
-func (dial *Dial) FillWithRequest(db *base.DB, request requests.CreateDialRequest) {
-	dial.Url = request.Url
-	dial.Description = request.Description
-	dial.Name = request.Name
+func (dial *Dial) FillWithRequest(db *base.DB, request requests.DialRequestInterface) {
+	dial.Url = request.GetUrl()
+	dial.Description = request.GetDescription()
+	dial.Name = request.GetName()
 }
 
 func (dial *Dial) CreateOrUpdateInfo(db *base.DB) {

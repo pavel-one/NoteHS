@@ -6,6 +6,13 @@ import (
 	"net/http"
 )
 
+type BaseRequest struct {
+}
+
+func (r *BaseRequest) Validate(ctx *gin.Context) bool {
+	return Validate(r, ctx)
+}
+
 func Validate(r interface{}, ctx *gin.Context) bool {
 	err := ctx.ShouldBind(r)
 
