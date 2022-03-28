@@ -1,12 +1,14 @@
 package controllers
 
 import (
+	"app/Services/ImageService"
 	"app/base"
 	"app/helpers"
 	"app/models"
 	"app/requests"
 	"app/resources"
 	"github.com/gin-gonic/gin"
+	"gopkg.in/guregu/null.v4"
 	"gorm.io/gorm"
 	"net/http"
 	"time"
@@ -95,6 +97,7 @@ func (c DialController) CreateDial(ctx *gin.Context) {
 	c.Success(resources.DialResource(&dial), ctx)
 	return
 }
+
 func (c DialController) EditDial(ctx *gin.Context) {
 	var request requests.EditDialRequest
 	var dial models.Dial
@@ -116,17 +119,48 @@ func (c DialController) EditDial(ctx *gin.Context) {
 		return
 	}
 
+	err := request.CheckUploadedFile() //Validate mime file
+
+	if request.Image.Size > 0 {
+		if err != nil {
+			c.Error(map[string]interface{}{
+				"image": err.Error(),
+			}, ctx)
+
+			return
+		}
+	}
+
 	if request.Url != dial.Url {
 		updatePhoto = true
 	}
 
-	dial.FillWithRequest(c.DB, request)
+	dial.FillWithRequest(c.DB, request) //Fill simple field
+
+	//If image exists
+	if request.Image.Size > 0 {
+		imagePath, err := ImageService.SaveImageWithForm(request.Image, dial.Url, dial.UserID)
+
+		if err != nil {
+			c.Error(map[string]interface{}{
+				"image": "Error processing image: " + err.Error(),
+			}, ctx)
+
+			return
+		}
+
+		dial.Screen = null.StringFrom(imagePath)
+	}
+
 	c.DB.Save(&dial)
 
-	if updatePhoto {
-		dial.SetProcess(c.DB)
-		go dial.UpdatePhoto(c.DB)
-	}
+	//Try create site screenshot after
+	defer func() {
+		if updatePhoto && (request.Image.Size == 0) {
+			dial.SetProcess(c.DB)
+			go dial.UpdatePhoto(c.DB)
+		}
+	}()
 
 	c.Success(resources.DialResource(&dial), ctx)
 	return

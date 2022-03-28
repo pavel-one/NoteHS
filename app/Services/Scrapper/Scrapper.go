@@ -1,12 +1,10 @@
 package Scrapper
 
 import (
+	"app/Services/ImageService"
 	"context"
-	"fmt"
 	"github.com/chromedp/chromedp"
-	"io/ioutil"
 	"log"
-	"os"
 	"time"
 )
 
@@ -56,7 +54,7 @@ func GetUrlInfo(url string, filename string, userId uint) (Url, error) {
 		return Url{}, err
 	}
 
-	screenshot, err := saveScreenshot(buf, filename, userId)
+	screenshot, err := ImageService.SaveImageWithBuff(buf, filename, userId, ".png")
 	if err != nil {
 		return Url{}, err
 	}
@@ -66,22 +64,4 @@ func GetUrlInfo(url string, filename string, userId uint) (Url, error) {
 		Url:    url,
 		Screen: screenshot,
 	}, nil
-}
-
-func saveScreenshot(buffer []byte, name string, userId uint) (string, error) {
-
-	dir := fmt.Sprintf("storage/screenshot/%v/", userId)
-	path := dir + name + ".png"
-
-	err := os.MkdirAll(dir, 0777)
-	if err != nil {
-		return "", err
-	}
-
-	err = ioutil.WriteFile(path, buffer, 0644)
-	if err != nil {
-		return "", err
-	}
-
-	return path, nil
 }

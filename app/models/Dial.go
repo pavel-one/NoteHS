@@ -4,8 +4,6 @@ import (
 	"app/Services/Scrapper"
 	"app/base"
 	"app/requests"
-	"crypto/md5"
-	"encoding/hex"
 	"gopkg.in/guregu/null.v4"
 	"log"
 	"os"
@@ -35,12 +33,7 @@ func (dial *Dial) FillWithRequest(db *base.DB, request requests.DialRequestInter
 func (dial *Dial) CreateOrUpdateInfo(db *base.DB) {
 	defer dial.SetProcessEnd(db)
 
-	hasher := md5.New()
-	hasher.Write([]byte(dial.Url))
-
-	filename := hex.EncodeToString(hasher.Sum(nil))
-
-	url, err := Scrapper.GetUrlInfo(dial.Url, filename, dial.UserID)
+	url, err := Scrapper.GetUrlInfo(dial.Url, dial.Url, dial.UserID)
 	if err != nil {
 		log.Println(err)
 		return
@@ -58,12 +51,7 @@ func (dial *Dial) CreateOrUpdateInfo(db *base.DB) {
 func (dial *Dial) UpdatePhoto(db *base.DB) {
 	defer dial.SetProcessEnd(db)
 
-	hasher := md5.New()
-	hasher.Write([]byte(dial.Url))
-
-	filename := hex.EncodeToString(hasher.Sum(nil))
-
-	url, err := Scrapper.GetUrlInfo(dial.Url, filename, dial.UserID)
+	url, err := Scrapper.GetUrlInfo(dial.Url, dial.Url, dial.UserID)
 	if err != nil {
 		log.Println(err)
 		return

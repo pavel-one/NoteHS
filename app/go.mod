@@ -20,6 +20,8 @@ replace github.com/gin-gonic/gin v1.7.7 => github.com/pavel-one/gin v1.7.8
 require (
 	github.com/chromedp/cdproto v0.0.0-20220321060548-7bc2623472b3 // indirect
 	github.com/chromedp/sysutil v1.0.0 // indirect
+	github.com/disintegration/imaging v1.6.2 // indirect
+	github.com/gabriel-vasile/mimetype v1.4.0 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
@@ -46,7 +48,8 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
-	golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2 // indirect
+	golang.org/x/image v0.0.0-20220321031419-a8550c1d254a // indirect
+	golang.org/x/net v0.0.0-20220325170049-de3da57026de // indirect
 	golang.org/x/sys v0.0.0-20220319134239-a9b59b0215f8 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
