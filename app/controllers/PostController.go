@@ -4,7 +4,9 @@ import (
 	"app/base"
 	"app/helpers"
 	"app/models"
+	"app/requests"
 	"app/resources"
+	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -31,5 +33,15 @@ func (c PostController) All(ctx *gin.Context) {
 }
 
 func (c PostController) UpdateOrCreate(ctx *gin.Context) {
+	//token, _ := helpers.GetToken(ctx)
+	//user, _ := helpers.GetUserWithToken(token, c.DB)
 
+	//var post models.Post
+	var request requests.PostRequest
+
+	if !requests.Validate(&request, ctx) {
+		return
+	}
+
+	fmt.Println(request)
 }

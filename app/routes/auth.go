@@ -28,5 +28,6 @@ func (r Route) Auth() {
 	post := r.Router.Group("posts").Use(postController.AuthMiddleware)
 	{
 		post.GET("/", postController.All)
+		post.POST("/", postController.UpdateOrCreate)
 	}
 }
