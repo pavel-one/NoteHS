@@ -29,5 +29,6 @@ func (r Route) Auth() {
 	{
 		post.GET("/", postController.All)
 		post.POST("/", postController.UpdateOrCreate)
+		post.DELETE("/:id", postController.Remove)
 	}
 }

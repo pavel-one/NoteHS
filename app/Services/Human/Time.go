@@ -89,7 +89,7 @@ var defaultMagnitudes = []RelTimeMagnitude{
 //
 // RelTime(timeInPast, timeInFuture, "earlier", "later") -> "3 weeks earlier"
 func RelTime(a, b time.Time, albl, blbl string) string {
-	b = b.Add(3 * time.Hour) //GMT+3
+	//b = b.Add(3 * time.Hour) //GMT+3
 	return CustomRelTime(a, b, albl, blbl, defaultMagnitudes)
 }
 

@@ -6,8 +6,8 @@ import (
 	"app/models"
 	"app/requests"
 	"app/resources"
-	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/gofrs/uuid"
 )
 
 type PostController struct {
@@ -33,15 +33,52 @@ func (c PostController) All(ctx *gin.Context) {
 }
 
 func (c PostController) UpdateOrCreate(ctx *gin.Context) {
-	//token, _ := helpers.GetToken(ctx)
-	//user, _ := helpers.GetUserWithToken(token, c.DB)
+	token, _ := helpers.GetToken(ctx)
+	user, _ := helpers.GetUserWithToken(token, c.DB)
 
-	//var post models.Post
+	var post models.Post
 	var request requests.PostRequest
 
 	if !requests.Validate(&request, ctx) {
 		return
 	}
 
-	fmt.Println(request)
+	id, err := uuid.NewV4()
+	if err != nil {
+		return
+	}
+
+	post.Uuid = id.String()
+	post.Name = request.Name
+	post.Description = request.Description
+	post.Public = false
+	post.UserId = user.ID
+	post.PostData = request.Data.ToString()
+
+	c.DB.Create(&post)
+
+	c.Success(resources.PostResource(&post), ctx)
+
+	return
+}
+
+func (c PostController) Remove(ctx *gin.Context) {
+	token, _ := helpers.GetToken(ctx)
+	user, _ := helpers.GetUserWithToken(token, c.DB)
+
+	var post models.Post
+	c.DB.Where("user_id = ? and uuid = ?", user.ID, ctx.Param("id")).First(&post)
+
+	if post.Uuid == "" {
+		c.Error(map[string]interface{}{
+			"id": "Не найдена такая заметка",
+		}, ctx)
+
+		return
+	}
+
+	c.DB.Where("user_id = ? and uuid = ?", user.ID, ctx.Param("id")).Delete(&post)
+	c.Success(resources.PostResource(&post), ctx)
+
+	return
 }
