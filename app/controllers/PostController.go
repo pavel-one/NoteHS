@@ -43,19 +43,23 @@ func (c PostController) UpdateOrCreate(ctx *gin.Context) {
 		return
 	}
 
-	id, err := uuid.NewV4()
-	if err != nil {
-		return
+	if !request.Id.Valid {
+		id, err := uuid.NewV4()
+		if err != nil {
+			return
+		}
+
+		post.Uuid = id.String()
+		post.Name = request.Name
+		post.Description = request.Description
+		post.Public = false
+		post.UserId = user.ID
+		post.PostData = request.Data.ToString()
+
+		c.DB.Create(&post)
+	} else {
+
 	}
-
-	post.Uuid = id.String()
-	post.Name = request.Name
-	post.Description = request.Description
-	post.Public = false
-	post.UserId = user.ID
-	post.PostData = request.Data.ToString()
-
-	c.DB.Create(&post)
 
 	c.Success(resources.PostResource(&post), ctx)
 
