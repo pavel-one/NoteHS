@@ -19,6 +19,12 @@ func (c UserController) User(ctx *gin.Context) {
 	c.Success(resource, ctx)
 }
 
+func (c UserController) SetSetting(ctx *gin.Context) {
+	token, _ := helpers.GetToken(ctx)
+	user, _ := helpers.GetUserWithToken(token, c.DB)
+
+}
+
 func NewUser(db *base.DB) *UserController {
 	controller := Controller{DB: db}
 
