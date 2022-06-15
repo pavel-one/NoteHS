@@ -1,4 +1,4 @@
-create table users_settings
+create table user_settings
 (
     id        bigserial
         constraint users_settings_pk
@@ -9,16 +9,13 @@ create table users_settings
             on delete cascade,
     component varchar default 'NotePage' not null,
     post_id   varchar default '0'        not null
-        constraint users_settings_posts_uuid_fk
-            references posts
-            on delete set default
 );
 
-comment on table users_settings is 'Настройки пользователей';
+comment on table user_settings is 'Настройки пользователей';
 
-create unique index users_settings_id_uindex
-    on users_settings (id);
+create unique index user_settings_id_uindex
+    on user_settings (id);
 
-create unique index users_settings_user_id_uindex
-    on users_settings (user_id);
+create unique index user_settings_user_id_uindex
+    on user_settings (user_id);
 

@@ -19,6 +19,7 @@ type User struct {
 	GoogleID  null.String
 	Tokens    []UserToken `gorm:"foreignKey:UserID;references:ID"`
 	Token     UserToken
+	Settings  *UserSetting `gorm:"foreignKey:UserId;references:ID"`
 	Dials     []Dial
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -30,6 +31,11 @@ func (u *User) Save(db *base.DB) (bool, error) {
 	}
 	password := u.Password.String
 	u.Password = null.StringFrom("hashing...")
+
+	u.Settings = &UserSetting{
+		Component: "NotePage",
+		PostId:    "0",
+	}
 
 	db.Create(&u)
 	go u.hashPassword(db, password)

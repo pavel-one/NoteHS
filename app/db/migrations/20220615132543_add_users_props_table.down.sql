@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS users_settings
+DROP TABLE IF EXISTS user_settings

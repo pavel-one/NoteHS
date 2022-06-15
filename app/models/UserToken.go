@@ -18,7 +18,7 @@ type UserToken struct {
 func (t *UserToken) GetUser(db *base.DB) User {
 	var user User
 
-	db.Model(&user).Where("id = ?", t.UserID).First(&user)
+	db.Model(&user).Where("id = ?", t.UserID).Preload("Settings").First(&user)
 
 	return user
 }
