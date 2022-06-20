@@ -5,6 +5,7 @@ import (
 	"app/models"
 	"app/requests"
 	"app/resources"
+	"errors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -52,6 +53,12 @@ func (c AuthController) Auth(ctx *gin.Context) {
 
 	//Auth with google id
 	if request.GoogleID.Valid {
+
+		if request.GoogleID.String == "" {
+			ctx.AbortWithError(403, errors.New("не передан Google Id"))
+			return
+		}
+
 		c.DB.Model(&user).Where("google_id = ?", request.GoogleID.String).First(&user)
 
 		if user.ID == 0 {

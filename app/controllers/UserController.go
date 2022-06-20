@@ -3,6 +3,7 @@ package controllers
 import (
 	"app/base"
 	"app/helpers"
+	"app/models"
 	"app/requests"
 	"app/resources"
 	"github.com/gin-gonic/gin"
@@ -34,6 +35,11 @@ func (c UserController) SetSetting(ctx *gin.Context) {
 	}
 
 	if request.PostId != "" {
+		var post models.Post
+
+		c.DB.Where("user_id = ? and id = ?", user.ID, request.PostId).Model(&post)
+
+		//TODO: Проверять существование такого поста
 		user.Settings.PostId = request.PostId
 	}
 
