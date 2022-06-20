@@ -25,6 +25,13 @@ type User struct {
 	UpdatedAt time.Time
 }
 
+func (u *User) SetDefaultSettings() {
+	u.Settings = &UserSetting{
+		Component: "NotePage",
+		PostId:    "0",
+	}
+}
+
 func (u *User) Save(db *base.DB) (bool, error) {
 	if !u.isUnique(db) {
 		return false, errors.New("такой пользователь уже существует")
@@ -32,10 +39,7 @@ func (u *User) Save(db *base.DB) (bool, error) {
 	password := u.Password.String
 	u.Password = null.StringFrom("hashing...")
 
-	u.Settings = &UserSetting{
-		Component: "NotePage",
-		PostId:    "0",
-	}
+	u.SetDefaultSettings()
 
 	db.Create(&u)
 	go u.hashPassword(db, password)
