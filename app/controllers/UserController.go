@@ -46,6 +46,7 @@ func (c UserController) SetSetting(ctx *gin.Context) {
 	user.Settings.Component = request.Component
 
 	c.DB.Save(&user)
+	c.DB.Save(user.Settings)
 
 	resource := resources.GetSettingResource(user.Settings)
 
