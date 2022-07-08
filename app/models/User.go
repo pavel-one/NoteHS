@@ -27,7 +27,7 @@ type User struct {
 
 func (u *User) SetDefaultSettings() {
 	u.Settings = &UserSetting{
-		Component: "NotePage",
+		Component: "SpeedDialPage",
 		PostId:    "0",
 	}
 }
