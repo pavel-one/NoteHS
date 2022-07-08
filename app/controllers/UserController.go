@@ -43,7 +43,9 @@ func (c UserController) SetSetting(ctx *gin.Context) {
 		user.Settings.PostId = request.PostId
 	}
 
-	user.Settings.Component = request.Component
+	if request.Component != "" {
+		user.Settings.Component = request.Component
+	}
 
 	c.DB.Save(&user)
 	c.DB.Save(user.Settings)
