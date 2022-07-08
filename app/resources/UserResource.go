@@ -14,6 +14,10 @@ type UserResource struct {
 }
 
 func GetUserResource(user *models.User) UserResource {
+	if user.Settings == nil {
+		user.SetDefaultSettings()
+	}
+
 	settingResource := GetSettingResource(user.Settings)
 
 	resource := UserResource{

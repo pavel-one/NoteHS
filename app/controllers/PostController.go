@@ -58,7 +58,7 @@ func (c PostController) UpdateOrCreate(ctx *gin.Context) {
 
 		c.DB.Create(&post)
 	} else {
-
+		//TODO: Обновление поста
 	}
 
 	c.Success(resources.PostResource(&post), ctx)
